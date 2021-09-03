@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Card, Button, Col, Row, Container } from 'react-bootstrap';
-
+import { withAuth0 } from "@auth0/auth0-react";
+import ImageModal from './ImageModal';
 
 export class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       drinkData: [],
-      show:false
+      show: false,
+      showModal:false,
+      modalData:[]
     }
   }
   componentDidMount = () => {
@@ -17,50 +20,71 @@ export class Home extends Component {
       console.log(response.data)
       this.setState({
         drinkData: response.data,
-        show:true
+        show: true
       })
     }).catch(error => console.log(error.message));
   }
 
-  createFavCard= (e, item) => {
+  createFavCard = (e, item) => {
     e.preventDefault();
-    const dataBody={
+    const dataBody = {
       strDrink: item.strDrink,
       strDrinkThumb: item.strDrinkThumb,
-        
-    }
-    axios.post(`https://test-applicatt.herokuapp.com/favDrink`,dataBody).then(response=>{
-      console.log(response.data)
-    }).catch(error=>console.log(error));
-}
 
+    }
+    axios.post(`https://test-applicatt.herokuapp.com/favDrink`, dataBody).then(response => {
+      console.log(response.data)
+    }).catch(error => console.log(error));
+  }
+
+  handleModalShow=(element)=>{
+    this.setState({
+      showModal:true,
+      modalData:element
+    })
+  }
+
+  handleClose=()=>{
+    this.setState({
+      showModal:false,
+    
+    })
+  }
 
   render() {
     return (
+      <>
+        {this.state.showModal&&<ImageModal
+        handleShow={this.handleModalShow}
+        modalData={this.state.modalData}
+        handleClose={this.handleClose}
+         />}
 
-      <Row>
-        {this.state.show&&this.state.drinkData.map((element, index) => {
-          return (<Col key={index}>
+        <Row>
+          {this.state.show && this.state.drinkData.map((element, index) => {
+            return (<Col key={index}>
 
-            <Card style={{ width: '18rem', margin: '20px 10px' }}>
-              <Container >
-                <Card.Title >{element.strDrink}</Card.Title>
-              </Container>
-              <Card.Body>
+              <Card style={{ width: '18rem', margin: '20px 10px' }}>
+                <Container >
+                  <Card.Title >{element.strDrink}</Card.Title>
+                </Container>
+                <Card.Body>
 
-                <Card.Img variant="top" src={element.strDrinkThumb} />
+                  <Card.Img variant="top" src={element.strDrinkThumb} />
 
-              </Card.Body>
-              <Card.Footer>
-                <Button onClick={this.handleModalShow} variant="primary">preview</Button>
-                <Button onClick={(e) => {this.createFavCard(e,element)}} variant="primary">Add to favorite</Button>
-              </Card.Footer>
-            </Card>
-          </Col>)
-        })}
-      </Row>
+                </Card.Body>
+                <Card.Footer>
+                  <Button onClick={()=>this.handleModalShow(element)} variant="primary">preview</Button>
+                  {this.props.auth0.isAuthenticated && <Button onClick={(e) => { this.createFavCard(e, element) }} variant="primary">Add to favorite</Button>}
+                </Card.Footer>
+              </Card>
+            </Col>)
+          })}
+        </Row>
+
+      </>
     )
   }
 }
 
-export default Home;
+export default withAuth0(Home);
