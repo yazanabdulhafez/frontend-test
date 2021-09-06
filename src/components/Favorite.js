@@ -15,6 +15,7 @@ export class Favorite extends Component {
       strDrink: "",
       strDrinkThumb: "",
       showForm:false,
+      
     }
   }
   componentDidMount = () => {
@@ -24,6 +25,7 @@ export class Favorite extends Component {
         showFavData: true,
         showForm:false,
       });
+      this.props.handleCounter(this.state.favData.length);
     });
   };
 
@@ -39,6 +41,7 @@ export class Favorite extends Component {
           showFavData: true,
           showForm:false,
         });
+        this.props.handleCounter(this.state.favData.length);
       });
     });
   };
@@ -71,6 +74,7 @@ export class Favorite extends Component {
             showFavData: true,
             showForm: false,
           });
+          this.props.handleCounter(this.state.favData.length);
         });
       });
   };

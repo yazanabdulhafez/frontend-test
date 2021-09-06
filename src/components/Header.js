@@ -15,8 +15,14 @@ import LoginButton from './LoginButton';
         </Container>
         <Container>
           <Link style={{ textDecoration: 'none' }} to="/">Home</Link>
-          <Link style={{ textDecoration: 'none' }} to="/favorite">Favorite</Link>
-          <Link style={{ textDecoration: 'none' }} to="/profile">Profile</Link>
+
+          {this.props.auth0.isAuthenticated&&
+    
+            <Link style={{ textDecoration: 'none' }} to="/favorite">Favorite({this.props.counter})</Link>
+          
+          }
+
+          {this.props.auth0.isAuthenticated&&<Link style={{ textDecoration: 'none' }} to="/profile">Profile</Link>}
           {/* TODO: if the user is logged in, render the `LogoutButton` - if the user is logged out, render the `LoginButton` */}
 
           {

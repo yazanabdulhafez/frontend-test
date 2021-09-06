@@ -11,20 +11,31 @@ import { withAuth0 } from "@auth0/auth0-react";
 
 export class App extends Component {
 
-
+constructor(props){
+  super(props);
+  this.state={
+    counter:0,
+  }
+}
   
+handleCounter=(value)=>{
+  this.setState({
+    counter:value,
+  })
+}
 
   render() {
     console.log('app',this.props.auth0);
     return (
       <Router>
-        <Header />
+        <Header counter={this.state.counter} />
         <Switch>
           <Route exact path="/">
-            <Home />
+            <Home handleCounter={this.handleCounter}
+            counter={this.state.counter} />
           </Route>
           <Route path="/favorite">
-          {this.props.auth0.isAuthenticated&&<Favorite />}
+          {this.props.auth0.isAuthenticated&&<Favorite handleCounter={this.handleCounter}/>}
           </Route>
           <Route path="/profile">
            {this.props.auth0.isAuthenticated&&<Profile auth0={this.props.auth0} />}

@@ -23,6 +23,16 @@ export class Home extends Component {
         show: true
       })
     }).catch(error => console.log(error.message));
+
+      axios.get("https://test-applicatt.herokuapp.com/favDrink").then((axiosRes) => {
+        this.setState({
+          favData: axiosRes.data,
+          showFavData: true,
+          showForm:false,
+        });
+        this.props.handleCounter(this.state.favData.length);
+      });
+   
   }
 
   createFavCard = (e, item) => {
@@ -32,8 +42,12 @@ export class Home extends Component {
       strDrinkThumb: item.strDrinkThumb,
 
     }
+    
     axios.post(`https://test-applicatt.herokuapp.com/favDrink`, dataBody).then(response => {
-      console.log(response.data)
+      console.log(response.data);
+      if (response.data!=="data already exist"){
+      this.props.handleCounter(this.props.counter+1);
+      };
     }).catch(error => console.log(error));
   }
 
